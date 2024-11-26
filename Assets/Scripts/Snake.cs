@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.UI;
 
 public class Snake : MonoBehaviour
 {
@@ -12,7 +13,9 @@ public class Snake : MonoBehaviour
     bool ate = false;
 
     public GameObject tailPrefab;
-
+    public GameObject GameOverMenu;
+    public Text score;
+    public int scoreValue;
     private void Start()
     {
         InvokeRepeating("Move", 0.3f, 0.3f);
@@ -55,10 +58,20 @@ public class Snake : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D coll)
     {
+        if (coll.CompareTag("border") || coll.CompareTag("Player"))
+        {
+        GameOverMenu.SetActive(true);
+        Time.timeScale = 0;
+        }
         if (coll.name.StartsWith("Food"))
         {
-            ate = true;
-
+           if(coll.CompareTag("TimePlus"))
+            {
+                Timer.timeLeft += 5;
+            }
+                ate = true;
+            scoreValue++;
+            score.text = scoreValue.ToString();
             Destroy(coll.gameObject);
         }
         else
